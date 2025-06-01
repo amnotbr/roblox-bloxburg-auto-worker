@@ -2,22 +2,23 @@ import cv2
 import numpy
 import os
 
-class ImportImage:
+
+class LoadImage:
     def __init__(self):
-        # define the paths of the images and load them through a function
-        self.folder_path = "/assets/"
-        self.images = []
-        self.filenames = []
+        self.init_path = "./assets/"
+
+    def load_image(self, image_path):
+        new_path = os.path.join(self.init_path, image_path)
         
-        self.script_dir = os.path.dirname(os.path.abspath(__file__))
-        self.folder_path = os.path.join(self.script_dir, '..', 'assets')
-    
-    def load(self):
-        for file in os.listdir(self.folder_path):
-            image = cv2.imread(os.path.join(self.folder_path, file))
-            
-            if image is not None:
-                self.images.append(image)
-                self.filenames.append(file)
+        img = cv2.imread(new_path)
         
-        return self.images, self.filenames
+        if img is None:
+            print("Error: could not load image ?Possible indirect path")
+        
+        # convert the color to make sure it is in the correct color format
+        if len(img.shape) == 2 or (len(img.shape) == 3 and img.shape[2] == 1):
+            color = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+        else:
+            color = img
+        
+        return color
